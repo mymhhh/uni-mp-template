@@ -1,5 +1,5 @@
 {
-  "name": "哪李贵了",
+  "name": "shop_online",
   "appid": "",
   "description": "",
   "versionName": "1.0.0",
@@ -50,7 +50,7 @@
   "quickapp": {},
   /* 小程序特有相关 */
   "mp-weixin": {
-    "appid": "wx14f444a6a9ed2f07",
+    "appid": "wxf903f7428a524ecc",
     "setting": {
       "urlCheck": false,
       "es6": true,
