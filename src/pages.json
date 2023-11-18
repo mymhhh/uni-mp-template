@@ -126,6 +126,17 @@
           }
         }
       ]
+    },
+    {
+      "root": "pagesOrder",
+      "pages": [
+        {
+          "path": "create/create",
+          "style": {
+            "navigationBarTitleText": "请填写订单"
+          }
+        }
+      ]
     }
   ],
   //分包预加载规则
