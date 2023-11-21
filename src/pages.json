@@ -24,8 +24,8 @@
     {
       "path": "pages/my/my",
       "style": {
-        "navigationBarTitleText": "我的",
-        "navigationStyle": "custom",
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom", // 隐藏默认导航
         "navigationBarTextStyle": "white"
       }
     },
@@ -140,6 +140,24 @@
           "path": "create/create",
           "style": {
             "navigationBarTitleText": "请填写订单"
+          }
+        },
+        {
+          "path": "detail/detail",
+          "style": {
+            "navigationBarTitleText": "detail"
+          }
+        },
+        {
+          "path": "list/list",
+          "style": {
+            "navigationBarTitleText": "list"
+          }
+        },
+        {
+          "path": "payment/payment",
+          "style": {
+            "navigationBarTitleText": "payment"
           }
         }
       ]
