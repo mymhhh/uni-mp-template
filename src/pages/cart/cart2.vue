@@ -3,10 +3,10 @@ import CartMain from './components/CartMain.vue'
 </script>
 
 <template>
-  <CartMain />
+  <CartMain safeAreaInsetBottom />
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 page {
   height: 100%;
 }
