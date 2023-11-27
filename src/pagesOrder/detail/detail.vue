@@ -1,22 +1,6 @@
 <script setup lang="ts">
 import { OrderState, orderStateList } from '@/config/constants'
-// 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = uni.getSystemInfoSync()
-// 弹出层组件
-const popup = ref<UniHelper.UniPopupInstance>()
-// 取消原因列表
-const reasonList = ref(['商品无货', '不想要了', '商品信息填错了', '地址信息填写错误', '商品降价', '其它'])
-// 订单取消原因
-const reason = ref('')
-// 复制内容
-const onCopy = (id: string) => {
-  // 设置系统剪贴板的内容
-  uni.setClipboardData({ data: id })
-}
-// 获取页面参数
-const query = defineProps<{
-  id: string
-}>()
+import Guess from '@/components/Guess/Guess.vue'
 /**
  * 自定义导航栏交互
  */
@@ -53,14 +37,31 @@ onReady(() => {
     endScrollOffset: 50
   })
 })
-// onLoad(() => {
-//   getMemberOrderByIdData()
-// })
+
+// 获取屏幕边界到安全区域距离
+const { safeAreaInsets } = uni.getSystemInfoSync()
+// 弹出层组件
+const popup = ref<UniHelper.UniPopupInstance>()
+// 取消原因列表
+const reasonList = ref(['商品无货', '不想要了', '商品信息填错了', '地址信息填写错误', '商品降价', '其它'])
+// 订单取消原因
+const reason = ref('')
+// 复制内容
+const onCopy = (id: string) => {
+  // 设置系统剪贴板的内容
+  uni.setClipboardData({ data: id })
+}
+// 获取页面参数
+const query = defineProps<{
+  id: string
+}>()
+
 // 获取订单详情
 const order = ref<OrderResult>()
 const getMemberOrderByIdData = async () => {
   const res = await getMemberOrderByIdAPI(query.id)
   order.value = res.result
+
   if (
     [OrderState.DaiShouHuo, OrderState.DaiPingJia, OrderState.YiWanCheng].includes(order.value.orderState)
   ) {
@@ -99,12 +100,10 @@ const onOrderCancel = async () => {
   // 轻提示
   uni.showToast({ icon: 'none', title: '订单取消成功' })
 }
-// 倒计时结束事件
-// const onTimeUp = () => {
 onLoad(() => {
   getMemberOrderByIdData()
 })
-// 倒计时组件
+// 倒计时结束事件
 const onTimeup = () => {
   // 修改订单状态为已取消
   order.value!.orderState = OrderState.YiQuXiao
@@ -115,14 +114,14 @@ const isDev = import.meta.env.DEV
 const onOrderPay = async () => {
   // 通过环境变量区分开发环境
   if (isDev) {
-    // 模拟支付
+    // 模拟支付，直接修改数据库
     await getPayMockAPI(parseInt(query.id))
   } else {
     // 生产环境
     const res = await getPayWxPayMiniPayAPI({ orderId: query.id })
     await wx.requestPayment(res.result)
   }
-  // 关闭当前页，跳转支付结果页
+  // 关闭当前页，跳转支付页
   uni.redirectTo({ url: `/pagesOrder/payment/payment?id=${query.id}` })
 }
 // 模拟发货
@@ -159,7 +158,7 @@ const onOrderConfirm = () => {
       <view class="title">订单详情</view>
     </view>
   </view>
-  <scroll-view class="viewport" scroll-y enable-back-to-top id="scroller">
+  <scroll-view scroll-y enable-back-to-top class="viewport" id="scroller">
     <template v-if="order">
       <!-- 订单状态 -->
       <view class="overview" :style="{ paddingTop: safeAreaInsets!.top + 20 + 'px' }">
@@ -210,7 +209,7 @@ const onOrderConfirm = () => {
         <!-- 用户收货地址 -->
         <view class="locate">
           <view class="user"> {{ order.receiverContact }} {{ order.receiverMobile }}</view>
-          <view class="address"> {{ order.receiverAddress }}</view>
+          <view class="address">{{ order.receiverAddress }}</view>
         </view>
       </view>
       <!-- 商品信息 -->
@@ -265,7 +264,7 @@ const onOrderConfirm = () => {
           <view class="item">
             订单编号: {{ query.id }} <text class="copy" @tap="onCopy(query.id)">复制</text>
           </view>
-          <view class="item">下单时间: {{ order?.createTime }}</view>
+          <view class="item">下单时间: {{ order.createTime }}</view>
         </view>
       </view>
       <!-- 猜你喜欢 -->
@@ -289,9 +288,9 @@ const onOrderConfirm = () => {
           </navigator>
           <!-- 待收货状态: 展示确认收货 -->
           <view
+            @tap="onOrderConfirm"
             class="button primary"
             v-if="order.orderState === OrderState.DaiShouHuo"
-            @tap="onOrderConfirm"
           >
             确认收货
           </view>

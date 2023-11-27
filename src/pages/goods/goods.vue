@@ -33,21 +33,13 @@ const openSkuPopup = (val: SkuMode) => {
   //修改按钮模式
   mode.value = val
 }
+
 // 获取商品详细信息
 const goods = ref<GoodsResult>()
 const getGoodsByIdData = async () => {
   const res = await getGoodsByIdAPI(query.id)
-  // skus处理
-  // for (var i = 0; i < res.result.skus.length; i++) {
-  //   const lists = res.result.skus[i].specs.split('}, {')
-  //   for (var j = 0; j < lists.length; i++) {
-  //     const list = lists[j].replace(': ', '').slice(2, -2).split('"')
-  //     const map = { name: list[3], valueName: list[list.length - 2] }
-  //     res.result.skus[i].specs.push(map)
-  //     console.log(res.result.skus)
-  //   }
-  // }
   goods.value = res.result
+
   // SKU组件所需格式
   localdata.value = {
     _id: res.result.id,
@@ -117,7 +109,6 @@ const onAddCart = async (ev: SkuPopupEvent) => {
   uni.showToast({ title: '添加成功' })
   isShowSku.value = false
 }
-
 // 立即购买
 const onByNow = (ev: SkuPopupEvent) => {
   uni.navigateTo({

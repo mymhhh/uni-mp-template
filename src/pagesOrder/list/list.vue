@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // 导入列表组件
 import OrderList from './components/OrderList.vue'
-import Guess from '@/components/Guess/Guess.vue'
-// 获取屏幕边界到安全区域距离
-// const { safeAreaInsets } = uni.getSystemInfoSync()
+
+// 获取⻚⾯参数
+const query = defineProps<{
+  type: string
+}>()
+
 // tabs 数据
 const orderTabs = ref([
   { orderState: 0, title: '全部' },
@@ -12,39 +15,28 @@ const orderTabs = ref([
   { orderState: 3, title: '待收货' },
   { orderState: 4, title: '待评价' }
 ])
-// 获取⻚⾯参数
-const query = defineProps<{
-  type: string
-}>()
+
 // ⾼亮下标
 const activeIndex = ref(orderTabs.value.findIndex((v) => v.orderState === Number(query.type)))
-// 猜你喜欢
-const { guessRef, onScrolltolower } = useGuessList()
 </script>
 <template>
   <view class="viewport">
-    <!-- 滚动容器 -->
-    <scroll-view refresher-enabled @scrolltolower="onScrolltolower" class="scroll-view" scroll-y>
-      <!-- tabs -->
-      <view class="tabs">
-        <text class="item" v-for="(item, index) in orderTabs" :key="item.title" @tap="activeIndex = index">
-          {{ item.title }}
-        </text>
-        <!-- 游标 -->
-        <view class="cursor" :style="{ left: activeIndex * 20 + '%' }"></view>
-      </view>
-      <!-- 滑动容器 -->
-      <swiper class="swiper" :current="activeIndex" @change="activeIndex = $event.detail.current">
-        <!-- 滑动项 -->
-        <swiper-item v-for="item in orderTabs" :key="item.title">
-          <!-- 订单列表 -->
-          <OrderList :order-state="item.orderState" />
-        </swiper-item>
-      </swiper>
-
-      <!-- 猜你喜欢 -->
-      <Guess ref="guessRef" />
-    </scroll-view>
+    <!-- tabs -->
+    <view class="tabs">
+      <text class="item" v-for="(item, index) in orderTabs" :key="item.title" @tap="activeIndex = index">
+        {{ item.title }}
+      </text>
+      <!-- 游标 -->
+      <view class="cursor" :style="{ left: activeIndex * 20 + '%' }"></view>
+    </view>
+    <!-- 滑动容器 -->
+    <swiper class="swiper" :current="activeIndex" @change="activeIndex = $event.detail.current">
+      <!-- 滑动项 -->
+      <swiper-item v-for="item in orderTabs" :key="item.title">
+        <!-- 订单列表 -->
+        <OrderList :order-state="item.orderState" />
+      </swiper-item>
+    </swiper>
   </view>
 </template>
 <style lang="scss">
@@ -90,51 +82,5 @@ page {
 // swiper
 .swiper {
   background-color: #f7f7f8;
-}
-// 订单列表
-.orders {
-  .card {
-    min-height: 100rpx;
-    padding: 20rpx;
-    margin: 20rpx 20rpx 0;
-    border-radius: 10rpx;
-    background-color: #fff;
-    &:last-child {
-      padding-bottom: 40rpx;
-    }
-  }
-  .status {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 28rpx;
-    color: #999;
-    margin-bottom: 15rpx;
-    .date {
-      color: #666;
-      flex: 1;
-    }
-    .primary {
-      color: #ff9240;
-    }
-    .icon-delete {
-      line-height: 1;
-      margin-left: 10rpx;
-      padding-left: 10rpx;
-      border-left: 1rpx solid #e3e3e3;
-    }
-  }
-  .goods {
-    display: flex;
-    margin-bottom: 20rpx;
-    .cover {
-      width: 170rpx;
-      height: 170rpx;
-      margin-right: 20rpx;
-      border-radius: 10rpx;
-      overflow: hidden;
-      position: relative;
-    }
-  }
 }
 </style>
